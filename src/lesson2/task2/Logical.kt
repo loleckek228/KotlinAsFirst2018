@@ -3,6 +3,7 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
+import lesson1.task1.trackLength
 
 /**
  * Пример
@@ -29,14 +30,8 @@ fun isNumberHappy(number: Int): Boolean =
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
-    val absX = Math.abs(x2 - x1)
-    val absY = Math.abs(y2 - y1)
-    if (x1 == x2 || y1 == y2 || absX == absY)
-        return true
-    return false
-}
-
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
+        x1 == x2 || y1 == y2 || Math.abs(x2 - x1) == Math.abs(y2 - y1)
 
 /**
  * Простая
@@ -45,23 +40,13 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
 fun daysInMonth(month: Int, year: Int): Int {
-    return when (month) {
-        1 -> 31
-        2 -> if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)) {
+    return when {
+        month == 2 -> if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)) {
             29
         } else
             28
-        3 -> 31
-        4 -> 30
-        5 -> 31
-        6 -> 30
-        7 -> 31
-        8 -> 31
-        9 -> 30
-        10 -> 31
-        11 -> 30
-        12 -> 31
-        else -> -1
+        ((month != 2) && (month < 8 && month % 2 != 0) || (month > 7 && month % 2 == 0)) -> 31
+        else -> 30
     }
 
 }
@@ -75,7 +60,7 @@ fun daysInMonth(month: Int, year: Int): Int {
  */
 fun circleInside(x1: Double, y1: Double, r1: Double,
                  x2: Double, y2: Double, r2: Double): Boolean =
-        r2 >= (Math.sqrt(Math.pow(x2 - x1, 2.0) + Math.pow(y2 - y1, 2.0))) + r1
+        r2 >= trackLength(x1, y1, x2, y2) + r1
 
 /**
  * Средняя

@@ -87,6 +87,13 @@ fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double = TODO()
 
+
+fun kingIsUnderAttack(kingX: Int, kingY: Int,
+                      rookX: Int, rookY: Int): Boolean = when {
+    ((kingX == rookX) || (kingY == rookY)) && ((kingX == rookX) || (kingY == rookY)) -> true
+    (kingX == rookX) || (kingY == rookY) -> true
+    else -> false
+}
 /**
  * Простая
  *
@@ -99,9 +106,9 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int = when {
-    ((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2)) -> 3
-    (kingX == rookX1) || (kingY == rookY1) && ((kingX != rookX2) && (kingY != rookY2)) -> 1
-    (kingX == rookX2) || (kingY == rookY2) && ((kingX != rookX1) && (kingY != rookY1)) -> 2
+    kingIsUnderAttack(kingX, kingY, rookX1, rookY1) && kingIsUnderAttack(kingX, kingY, rookX2, rookY2) -> 3
+    kingIsUnderAttack(kingX, kingY, rookX1, rookY1) && !kingIsUnderAttack(kingX, kingY, rookX2, rookY2) -> 1
+    kingIsUnderAttack(kingX, kingY, rookX2, rookY2) && !kingIsUnderAttack(kingX, kingY, rookX1, rookY1) -> 2
     else -> 0
 }
 
@@ -120,12 +127,12 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           bishopX: Int, bishopY: Int): Int {
     val absX = Math.abs(kingX - bishopX)
     val absY = Math.abs(kingY - bishopY)
+    val equity = absX == absY
     return when {
-        (absX == absY) && (kingX == rookX || kingY == rookY) -> 3
-        (absX == absY) && (kingX != rookX && kingY != rookY) -> 2
-        (kingX == rookX || kingY == rookY) && (absX != absY) -> 1
+        equity && kingIsUnderAttack(kingX, kingY, rookX, rookY) -> 3
+        equity && !kingIsUnderAttack(kingX, kingY, rookX, rookY) -> 2
+        kingIsUnderAttack(kingX, kingY, rookX, rookY) && !equity -> 1
         else -> 0
-
     }
 }
 
@@ -142,20 +149,21 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
         val sqrA = sqr(a)
         val sqrB = sqr(b)
         val sqrC = sqr(c)
-
-        if (sqrA == sqrB + sqrC || sqrB == sqrA + sqrC || sqrC == sqrA + sqrB)
+        val maxSide = maxOf(sqrA, maxOf(sqrB, sqrC))
+        val minSide = minOf(sqrA, minOf(sqrB, sqrC))
+        val medium = sqrA + sqrB + sqrC - maxSide - minSide
+        val sum = medium + minSide
+        if (maxSide == sum)
             return 1
-        if (sqrA > sqrB + sqrC || sqrB > sqrA + sqrC || sqrC > sqrA + sqrB)
+        if (maxSide > sum)
             return 2
-        if (sqrA < sqrB + sqrC || sqrB < sqrA + sqrC || sqrC < sqrB + sqrC)
+        if (maxSide < sum)
             return 0
 
     } else
         return -1
     return -1
-
 }
-
 
 /**
  * Средняя
@@ -165,12 +173,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
-    (a >= c) && (b <= d) -> b - a
-    (a >= c) && (b >= d) && (a <= d) -> d - a
-    (a <= c) && (b >= c) && (b <= d) -> b - c
-    (a <= c) && (b >= d) -> d - c
-    else -> -1
-}
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+        if (minOf(b, d) - maxOf(a, c) >= 0)
+            minOf(b, d) - maxOf(a, c)
+        else
+            -1
 
 
