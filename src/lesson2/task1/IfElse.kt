@@ -72,7 +72,6 @@ fun ageDescription(age: Int): String {
         age1 == 1 -> "$age год"
         age1 in 2..4 -> "$age года"
         else -> "$age лет"
-
     }
 }
 
@@ -155,15 +154,13 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
         val minSide = minOf(sqrA, sqrB, sqrC)
         val medium = sqrA + sqrB + sqrC - maxSide - minSide
         val sum = medium + minSide
-        if (maxSide == sum)
-            return 1
-        if (maxSide > sum)
-            return 2
-        if (maxSide < sum)
-            return 0
-
-    } else
-        return -1
+        return when {
+            maxSide == sum -> 1
+            maxSide > sum -> 2
+            maxSide < sum -> 0
+            else -> -1
+        }
+    }
     return -1
 }
 
@@ -180,5 +177,3 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
             minOf(b, d) - maxOf(a, c)
         else
             -1
-
-
