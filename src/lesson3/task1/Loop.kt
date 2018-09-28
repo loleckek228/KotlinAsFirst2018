@@ -87,17 +87,12 @@ fun digitNumber(n: Int): Int {
 fun fib(n: Int): Int {
     var fib1 = 1
     var fib2 = 1
-    var fN = 0
-    if (n == 1 || n == 2)
-        return 1
-    else {
-        for (i in 3..n) {
-            fN = fib1 + fib2
-            fib1 = fib2
-            fib2 = fN
-        }
+    for (i in 3..n) {
+        val fN = fib1 + fib2
+        fib1 = fib2
+        fib2 = fN
     }
-    return fN
+    return fib2
 }
 
 /**
@@ -115,8 +110,9 @@ fun lcm(m: Int, n: Int): Int = TODO()
  */
 fun minDivisor(n: Int): Int {
     for (i in 2..sqrt(n.toDouble()).toInt()) {
-        if (n % i == 0)
+        if (n % i == 0) {
             return i
+        }
     }
     return n
 }
@@ -141,8 +137,9 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     while (newM != newN) {
         if (newM > newN) {
             newM -= newN
-        } else
+        } else {
             newN -= newM
+        }
     }
     return newM == 1
 }
@@ -155,12 +152,13 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    if ((m == 1 && n == 1) || (m == 0 && n == 0))
+    if ((m == 1 && n == 1) || (m == 0 && n == 0)) {
         return true
+    }
     for (i in m..n) {
-        if (i % sqrt(i.toDouble()) == 0.0)
+        if (i % sqrt(i.toDouble()) == 0.0) {
             return true
-
+        }
     }
     return false
 }
@@ -184,16 +182,17 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
 fun collatzSteps(x: Int): Int {
     var newX = x
     var result = 0
-    if (x == 1) return 0
+    if (x == 1) {
+        return 0
+    }
     while (newX != 1) {
-        if (newX % 2 == 0){
+        if (newX % 2 == 0) {
             result++
             newX /= 2
         } else {
             result++
             newX = 3 * newX + 1
         }
-
     }
     return result
 }
@@ -229,7 +228,6 @@ fun revert(n: Int): Int {
     while (newN != 0) {
         result = result * 10 + newN % 10
         newN /= 10
-
     }
     return result
 }
@@ -256,18 +254,17 @@ fun isPalindrome(n: Int): Boolean = revert(n) == n
 fun hasDifferentDigits(n: Int): Boolean {
     var newN = n
     val division = newN % 10
-    if (n == 0) return false
+    if (n == 0) {
+        return false
+    }
     while (newN != 0) {
         newN /= 10
         val value = newN % 10
-        if (division != value && value != 0)
+        if (division != value && value != 0) {
             return true
-
+        }
     }
-
-
     return false
-
 }
 
 /**
@@ -291,7 +288,6 @@ fun squareSequenceDigit(n: Int): Int {
     while (digit != n) {
         digit--
         result /= 10
-
     }
     return result % 10
 }

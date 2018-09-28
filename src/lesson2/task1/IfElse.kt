@@ -94,6 +94,7 @@ fun kingIsUnderAttack(kingX: Int, kingY: Int,
     (kingX == rookX) || (kingY == rookY) -> true
     else -> false
 }
+
 /**
  * Простая
  *
@@ -128,10 +129,11 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
     val absX = Math.abs(kingX - bishopX)
     val absY = Math.abs(kingY - bishopY)
     val equity = absX == absY
+    val kingIsAttack = kingIsUnderAttack(kingX, kingY, rookX, rookY)
     return when {
-        equity && kingIsUnderAttack(kingX, kingY, rookX, rookY) -> 3
-        equity && !kingIsUnderAttack(kingX, kingY, rookX, rookY) -> 2
-        kingIsUnderAttack(kingX, kingY, rookX, rookY) && !equity -> 1
+        equity && kingIsAttack -> 3
+        equity && !kingIsAttack -> 2
+        kingIsAttack && !equity -> 1
         else -> 0
     }
 }
@@ -149,8 +151,8 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
         val sqrA = sqr(a)
         val sqrB = sqr(b)
         val sqrC = sqr(c)
-        val maxSide = maxOf(sqrA, maxOf(sqrB, sqrC))
-        val minSide = minOf(sqrA, minOf(sqrB, sqrC))
+        val maxSide = maxOf(sqrA, sqrB, sqrC)
+        val minSide = minOf(sqrA, sqrB, sqrC)
         val medium = sqrA + sqrB + sqrC - maxSide - minSide
         val sum = medium + minSide
         if (maxSide == sum)
