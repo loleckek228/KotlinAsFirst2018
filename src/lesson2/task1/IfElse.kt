@@ -1,4 +1,3 @@
-@file:Suppress("UNUSED_PARAMETER")
 
 package lesson2.task1
 
@@ -157,8 +156,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
         return when {
             maxSide == sum -> 1
             maxSide > sum -> 2
-            maxSide < sum -> 0
-            else -> -1
+            else -> 0
         }
     }
     return -1
