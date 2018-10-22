@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import java.lang.Math.pow
+import java.lang.StringBuilder
 import kotlin.math.sqrt
 
 /**
@@ -116,13 +117,9 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    var result = 0.0
-    for (i in v) {
-        result += pow(i, 2.0)
-    }
-    return sqrt(result)
-}
+fun abs(v: List<Double>): Double =
+        sqrt(v.fold(0.0) { total, next -> total + pow(next, 2.0) })
+
 
 /**
  * Простая
@@ -130,10 +127,10 @@ fun abs(v: List<Double>): Double {
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
 fun mean(list: List<Double>): Double {
-    if (list.isEmpty()) {
-        return 0.0
+    return if (list.isEmpty()) {
+        0.0
     } else {
-        return list.sum() / list.size
+        list.sum() / list.size
     }
 }
 
@@ -160,13 +157,9 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
-fun times(a: List<Double>, b: List<Double>): Double {
-    var result = 0.0
-    for (i in 0 until a.size) {
-        result += a[i] * b[i]
-    }
-    return result
-}
+fun times(a: List<Double>, b: List<Double>): Double =
+        a.zip(b) { elementA, elementB -> elementA * elementB }.fold(0.0)
+        { previousResult, element -> previousResult + element }
 
 /**
  * Средняя
@@ -176,13 +169,9 @@ fun times(a: List<Double>, b: List<Double>): Double {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0.0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double {
-    var result = 0.0
-    for (i in 0 until p.size) {
-        result += p[i] * pow(x, i.toDouble())
-    }
-    return result
-}
+fun polynom(p: List<Double>, x: Double): Double =
+        p.withIndex().fold(0.0) { result, (count, element) -> result + element * pow(x, count.toDouble()) }
+
 
 /**
  * Средняя
@@ -211,12 +200,12 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    var result = listOf<Int>()
+    val result = mutableListOf<Int>()
     var newN = n
     var count = 2
     while (count <= newN) {
         if (newN % count == 0) {
-            result += count
+            result.add(count)
             newN /= count
         } else {
             count++
@@ -267,15 +256,15 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     val numbers = convert(n, base)
     val words = "abcdefghijklmnopqrstuvwxyz"
-    var result = ""
+    val result = StringBuilder()
     for (element in numbers) {
-        if (element < 9) {
-            result += element
+        if (element < 10) {
+            result.append(element)
         } else {
-            result += words[element - 10]
+            result.append(words[element - 10])
         }
     }
-    return result
+    return result.toString()
 }
 
 /**
@@ -326,14 +315,14 @@ fun roman(n: Int): String {
     val numbers = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
     val romanDigit = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
     var newN = n
-    var result = ""
+    val result = StringBuilder()
     for (i in 0 until romanDigit.size) {
         while (newN >= numbers[i]) {
             newN -= numbers[i]
-            result += romanDigit[i]
+            result.append(romanDigit[i])
         }
     }
-    return result
+    return result.toString()
 }
 
 /**
