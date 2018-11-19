@@ -96,17 +96,9 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
-    val result = mapA.toMutableMap()
-    mapB.forEach { (name, phone) ->
-        if (mapA.containsKey(name) && !mapA.containsValue(phone)) {
-            result[name] = "${mapA[name]}, $phone"
-        } else {
-            result[name] = phone
-        }
-    }
-    return result
-}
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> =
+        mapA.toList().plus(mapB.toList()).groupBy({ it.first }, { it.second })
+                .mapValues { (_, value) -> value.distinctBy { it }.joinToString(", ") { it } }
 
 /**
  * Простая
@@ -151,7 +143,6 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> =
         stockPrices.groupBy({ it.first }, { it.second }).mapValues { mean(it.value) }
-
 
 /**
  * Средняя
@@ -250,14 +241,6 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean =
 fun extractRepeats(list: List<String>): Map<String, Int> =
         list.groupBy { it }.mapValues { if (it.value.size > 1) it.value.size else 1 }
                 .filterValues { it > 1 }
-
-/*{
-    val result = mutableMapOf<String, Int>()
-    list.forEach { value ->
-        result[value] = list.count { secondValue -> secondValue == value }
-    }
-    return result.filterValues { it > 1 }
-}*/
 
 /**
  * Средняя
