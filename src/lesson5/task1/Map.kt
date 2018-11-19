@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import lesson4.task1.mean
+
 /**
  * Пример
  *
@@ -96,13 +98,11 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val result = mapA.toMutableMap()
-    mapB.forEach { (key, phone) ->
-        if (mapA.containsKey(key)) {
-            if (!mapA.containsValue(phone)) {
-                result[key] = "${mapA[key]}, $phone"
-            }
+    mapB.forEach { (name, phone) ->
+        if (mapA.containsKey(name) && !mapA.containsValue(phone)) {
+            result[name] = "${mapA[name]}, $phone"
         } else {
-            result[key] = phone
+            result[name] = phone
         }
     }
     return result
@@ -149,11 +149,9 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val result = mutableMapOf<String, Double>()
-    stockPrices.forEach { result[it.first] = (result.getOrDefault(it.first, it.second) + it.second) / 2 }
-    return result
-}
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> =
+        stockPrices.groupBy({ it.first }, { it.second }).mapValues { mean(it.value) }
+
 
 /**
  * Средняя
@@ -170,17 +168,9 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var minPrice = Double.MAX_VALUE
-    var result: String? = null
-    stuff.forEach { (key, value) ->
-        if (kind == value.first && minPrice >= value.second) {
-            minPrice = value.second
-            result = key
-        }
-    }
-    return result
-}
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? =
+        stuff.filter { it.value.first == kind }
+                .minBy { it.value.second }?.key
 
 /**
  * Сложная
@@ -225,12 +215,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = b.forEach { (key, value) ->
     if (value == a[key]) a.remove(key)
 }
+
 /**
  * Простая
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { it in b }.toList()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b).toList()
+
 /**
  * Средняя
  *
@@ -240,15 +232,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.filter { it
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val setChars = chars.map { it.toLowerCase() }.toSet()
-    word.toLowerCase().forEach { letter ->
-        if (!setChars.contains(letter)) {
-            return false
-        }
-    }
-    return true
-}
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+        chars.map { it.toLowerCase() }.toSet().containsAll(word.toLowerCase().toSet())
 
 /**
  * Средняя
@@ -262,13 +247,17 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> {
+fun extractRepeats(list: List<String>): Map<String, Int> =
+        list.groupBy { it }.mapValues { if (it.value.size > 1) it.value.size else 1 }
+                .filterValues { it > 1 }
+
+/*{
     val result = mutableMapOf<String, Int>()
     list.forEach { value ->
         result[value] = list.count { secondValue -> secondValue == value }
     }
     return result.filterValues { it > 1 }
-}
+}*/
 
 /**
  * Средняя
@@ -280,13 +269,9 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    val result = mutableSetOf<List<Char>>()
-    for (word in words) {
-        if (word.toList().sorted() in result) {
-            return true
-        } else {
-            result.add(word.toList().sorted())
-        }
+    val result = words.map { it.toList().sorted() }
+    if (result.toSet().toList() != result) {
+        return true
     }
     return false
 }
