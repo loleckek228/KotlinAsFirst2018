@@ -113,7 +113,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val result = mutableMapOf<Int, List<String>>()
     grades.forEach { name, grade ->
-        result[grade] = ((result[grade] ?: listOf()) + name).sortedDescending()
+        result[grade] = (result.getOrDefault(grade, listOf()) + name).sortedDescending()
     }
     return result
 }
@@ -160,8 +160,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? =
-        stuff.filter { it.value.first == kind }
-                .minBy { it.value.second }?.key
+        stuff.filter { it.value.first == kind }.minBy { it.value.second }?.key
 
 /**
  * Сложная
@@ -212,7 +211,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = b.
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b).toList()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b.toSet()).toList()
 
 /**
  * Средняя
@@ -253,7 +252,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> =
  */
 fun hasAnagrams(words: List<String>): Boolean {
     val result = words.map { it.toList().sorted() }
-    if (result.toSet().toList() != result) {
+    if (result.size != result.toSet().toList().size) {
         return true
     }
     return false
