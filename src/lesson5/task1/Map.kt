@@ -187,7 +187,6 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
-
 /**
  * Простая
  *
@@ -211,7 +210,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = b.
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b.toSet()).toList()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b).toList()
 
 /**
  * Средняя
@@ -252,7 +251,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> =
  */
 fun hasAnagrams(words: List<String>): Boolean {
     val result = words.map { it.toList().sorted() }
-    if (result.toSet().toList().size != result.size) {
+    if (result.toSet().count() != result.size) {
         return true
     }
     return false
