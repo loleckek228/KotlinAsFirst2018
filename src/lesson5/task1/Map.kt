@@ -187,6 +187,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+
 /**
  * Простая
  *
@@ -274,7 +275,21 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val result = mutableMapOf<Int, Int>()
+    if (list.isEmpty()) {
+        return -1 to -1
+    }
+    for (i in 0 until list.size) {
+        if ((number - list[i]) in result) {
+            return result[number - list[i]]!! to i
+        } else {
+            result[list[i]] = i
+        }
+    }
+    return -1 to -1
+
+}
 
 /**
  * Очень сложная
@@ -295,4 +310,24 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    var result = setOf<String>()
+    var eachPrice = mapOf<String, Int>()
+    var maxPrice = 0
+    val filterCapacity = treasures.filterValues { it.first <= capacity }
+    if (filterCapacity.isEmpty()) {
+        return emptySet()
+    }
+    filterCapacity.forEach { name, info ->
+        val price = info.first * info.second
+        eachPrice += name to price
+    }
+    eachPrice.forEach { treasure, cost ->
+        if (cost >= maxPrice) {
+            maxPrice = cost
+            result = setOf(treasure)
+        }
+    }
+    return result
+}
+
